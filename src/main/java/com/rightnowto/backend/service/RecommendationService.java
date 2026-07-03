@@ -23,8 +23,8 @@ public class RecommendationService {
     private String geminiApiKey;
 
     public RecommendationService(WeatherService weatherService,
-                                 PlacesService placesService,
-                                 VibeCheckRepository vibeCheckRepository) {
+            PlacesService placesService,
+            VibeCheckRepository vibeCheckRepository) {
         this.weatherService = weatherService;
         this.placesService = placesService;
         this.vibeCheckRepository = vibeCheckRepository;
@@ -47,13 +47,11 @@ public class RecommendationService {
             Map<String, Object> requestBody = Map.of(
                     "contents", List.of(
                             Map.of("parts", List.of(
-                                    Map.of("text", prompt)
-                            ))
-                    )
-            );
+                                    Map.of("text", prompt)))));
 
             Map<String, Object> response = restClient.post()
-                    .uri("https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=" + geminiApiKey)
+                    .uri("https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key="
+                            + geminiApiKey)
                     .header("Content-Type", "application/json")
                     .body(requestBody)
                     .retrieve()
@@ -87,7 +85,7 @@ public class RecommendationService {
             Map<String, Object> parsed = objectMapper.readValue(geminiText, Map.class);
             return (List<Map<String, Object>>) parsed.get("recommendations");
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             return List.of(Map.of("error", "Something went wrong" + e.getMessage()));
         }
     }
