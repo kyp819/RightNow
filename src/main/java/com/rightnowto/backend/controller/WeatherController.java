@@ -1,9 +1,8 @@
-package controller;
+package com.rightnowto.backend.controller;
 
 import com.rightnowto.backend.service.WeatherService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.Map;
 
 @RestController
@@ -15,7 +14,7 @@ public class WeatherController {
         this.weatherService = weatherService;
     }
 
-    @GetMapping("api/weather")
+    @GetMapping("/api/weather")
     public Map<String, Object> getWeather()
     {
         return weatherService.getCurrentWeather();
