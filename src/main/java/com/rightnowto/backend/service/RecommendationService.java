@@ -45,44 +45,57 @@ public class RecommendationService {
                     + "{\"recommendations\": [{\"placeName\": \"...\", \"reason\": \"...\", \"Type\"}]}";
 
             Map<String, Object> requestBody = Map.of(
-                    "contents", List.of(
-                            Map.of("parts", List.of(
-                                    Map.of("text", prompt)))));
+                    "model", "nvidia/nemotron-3-ultra-550b-a55b:free",
+                    "messages", List.of(
+                            Map.of(
+                                    "role", "user",
+                                    "content", prompt
+                            )
+                    )
+            );
 
             Map<String, Object> response = restClient.post()
-                    .uri("https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key="
-                            + geminiApiKey)
+                    .uri("https://openrouter.ai/api/v1/chat/completions")
                     .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + geminiApiKey)
                     .body(requestBody)
                     .retrieve()
                     .body(Map.class);
 
-            if (response == null || response.get("candidates") == null) {
-                return List.of(Map.of("error", "No response from Gemini"));
+            if (response == null || response.get("choices") == null) {
+                return List.of(Map.of("error", "No response from OpenRouter"));
             }
 
-            List<Map<String, Object>> candidates = (List<Map<String, Object>>) response.get("candidates");
+            List<Map<String, Object>> choices = (List<Map<String, Object>>) response.get("choices");
 
-            if (candidates.isEmpty()) {
-                return List.of(Map.of("error", "Gemini returned no candidates"));
+            if (choices.isEmpty()) {
+                return List.of(Map.of("error", "OpenRouter returned no choices"));
             }
 
-            Map<String, Object> firstCandidate = candidates.get(0);
-            Map<String, Object> content = (Map<String, Object>) firstCandidate.get("content");
+            Map<String, Object> firstChoice = choices.get(0);
+            Map<String, Object> message = (Map<String, Object>) firstChoice.get("message");
 
-            if (content == null || content.get("parts") == null) {
-                return List.of(Map.of("error", "Gemini response has no content"));
+            if (message == null || message.get("content") == null) {
+                return List.of(Map.of("error", "OpenRouter response has no message content"));
             }
 
-            List<Map<String, Object>> parts = (List<Map<String, Object>>) content.get("parts");
-
-            if (parts.isEmpty()) {
-                return List.of(Map.of("error", "Gemini response has no parts"));
+            String responseText = (String) message.get("content");
+            
+            // Clean markdown JSON formatting if present
+            if (responseText.contains("```json")) {
+                responseText = responseText.substring(responseText.indexOf("```json") + 7);
+                if (responseText.contains("```")) {
+                    responseText = responseText.substring(0, responseText.indexOf("```"));
+                }
+            } else if (responseText.contains("```")) {
+                responseText = responseText.substring(responseText.indexOf("```") + 3);
+                if (responseText.contains("```")) {
+                    responseText = responseText.substring(0, responseText.indexOf("```"));
+                }
             }
+            responseText = responseText.trim();
 
-            String geminiText = (String) parts.get(0).get("text");
-
-            Map<String, Object> parsed = objectMapper.readValue(geminiText, Map.class);
+            Map<String, Object> parsed = objectMapper.readValue(responseText, Map.class);
             return (List<Map<String, Object>>) parsed.get("recommendations");
 
         } catch (Exception e) {
