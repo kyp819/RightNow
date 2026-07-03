@@ -20,7 +20,8 @@ public class PlacesService {
     {
 
         Map<String, Object> requestBody = Map.of(
-                "includedTypes", List.of("cafe"),
+                "includedTypes", List.of("cafe", "coffee_shop", "bakery", "restaurant", "bar", "pub", "ice_cream_shop", "juice_shop","vegan_restaurant"
+                        ,"vegetarian_restaurant"),
                 "maxResultCount", 10,
                 "locationRestriction", Map.of(
                         "circle", Map.of(
@@ -37,10 +38,11 @@ public class PlacesService {
                 .uri("https://places.googleapis.com/v1/places:searchNearby")
                 .header("X-Goog-Api-Key", apiKey)
                 .header("X-Goog-FieldMask",
-                        "places.displayName," +
+                            "places.displayName," +
                                 "places.formattedAddress," +
                                 "places.location," +
-                                "places.regularOpeningHours")
+                                "places.regularOpeningHours,"+
+                                    "places.nationalPhoneNumber")
                 .body(requestBody)
                 .retrieve()
                 .body(new ParameterizedTypeReference<Map<String, Object>>() {});

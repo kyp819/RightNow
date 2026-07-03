@@ -37,12 +37,12 @@ public class RecommendationService {
             List<VibeCheck> vibeChecks = vibeCheckRepository.findAll();
 
             String prompt = "It is currently " + weather.get("current") + " in downtown Toronto. "
-                    + "Here are nearby cafes: " + places.get("places") + ". "
+                    + "Here are nearby food and drink spots: " + places.get("places") + ". "
                     + "Here are recent vibe checks: " + vibeChecks + ". "
-                    + "Based on the weather, time, and vibe checks, recommend the best 3-5 cafes right now. "
+                    + "Based on the weather, time, and vibe checks, recommend the best 3-5 food and drink spots right now and also show 3 - 4 food and drink spots which are vegetarian and vegan"
                     + "For each, give a short plain-English reason. "
                     + "Respond ONLY with valid JSON, no other text, in this exact format: "
-                    + "{\"recommendations\": [{\"placeName\": \"...\", \"reason\": \"...\"}]}";
+                    + "{\"recommendations\": [{\"placeName\": \"...\", \"reason\": \"...\", \"Type\"}]}";
 
             Map<String, Object> requestBody = Map.of(
                     "contents", List.of(
