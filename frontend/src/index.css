@@ -1,0 +1,113 @@
+/* Custom CSS Design System - RightNow TO */
+:root {
+  /* Core Colors */
+  --primary-rgb: 230, 81, 0; /* #E65100 */
+  --primary-dark-rgb: 191, 54, 12; /* #BF360C */
+  --secondary-rgb: 78, 52, 46; /* #4E342E */
+  
+  /* Status Colors */
+  --status-busy: #E53935;
+  --status-chill: #43A047;
+  --status-empty: #1E88E5;
+  
+  /* Light Theme Variables */
+  --background: #FAF9F6;
+  --surface: rgba(255, 255, 255, 0.85);
+  --surface-border: rgba(224, 212, 208, 0.5);
+  --text-primary: #2E2522;
+  --text-secondary: #756561;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.06);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  
+  /* Fonts */
+  --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+[data-theme="dark"] {
+  --background: #120F0E;
+  --surface: rgba(30, 26, 25, 0.85);
+  --surface-border: rgba(78, 65, 62, 0.4);
+  --text-primary: #F3EFEF;
+  --text-secondary: #AFA09C;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.4);
+  --glass-bg: rgba(30, 26, 25, 0.65);
+  --glass-border: rgba(78, 65, 62, 0.2);
+}
+
+/* Reset and Global Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--background);
+  color: var(--text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(var(--primary-rgb), 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(var(--secondary-rgb), 0.08) 0px, transparent 50%);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Smooth Scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(var(--primary-rgb), 0.2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--primary-rgb), 0.4);
+}
+
+/* Utility Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.animate-pulse {
+  animation: pulse 1.8s ease-in-out infinite;
+}
