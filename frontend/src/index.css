@@ -1,25 +1,25 @@
 /* Custom CSS Design System - RightNow TO */
 :root {
-  /* Core Colors */
-  --primary-rgb: 230, 81, 0; /* #E65100 */
-  --primary-dark-rgb: 191, 54, 12; /* #BF360C */
-  --secondary-rgb: 78, 52, 46; /* #4E342E */
+  /* Core Colors (Cafe Theme) */
+  --primary-rgb: 109, 76, 65; /* #6D4C41 - Roasted Coffee Brown */
+  --primary-dark-rgb: 62, 39, 35; /* #3E2723 - Deep Espresso Dark Brown */
+  --secondary-rgb: 188, 170, 164; /* #BCAAA4 - Latte Milk froth */
   
   /* Status Colors */
-  --status-busy: #E53935;
-  --status-chill: #43A047;
-  --status-empty: #1E88E5;
+  --status-busy: #B71C1C; /* Deep warm red */
+  --status-chill: #2E7D32; /* Cozy forest green */
+  --status-empty: #795548; /* Light roasted cocoa brown */
   
   /* Light Theme Variables */
-  --background: #FAF9F6;
-  --surface: rgba(255, 255, 255, 0.85);
-  --surface-border: rgba(224, 212, 208, 0.5);
-  --text-primary: #2E2522;
-  --text-secondary: #756561;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.06);
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.4);
+  --background: #FDFBF9; /* Warm Vanilla Almond Cream */
+  --surface: rgba(253, 245, 237, 0.9); /* Warm froth cream */
+  --surface-border: rgba(141, 110, 99, 0.25); /* Medium Cocoa Border */
+  --text-primary: #3E2723; /* Dark roasted espresso */
+  --text-secondary: #795548; /* Warm coffee brown */
+  --shadow-sm: 0 2px 8px rgba(62, 39, 35, 0.04);
+  --shadow-md: 0 8px 30px rgba(62, 39, 35, 0.08);
+  --glass-bg: rgba(253, 245, 237, 0.7);
+  --glass-border: rgba(253, 245, 237, 0.4);
   
   /* Fonts */
   --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -27,15 +27,15 @@
 }
 
 [data-theme="dark"] {
-  --background: #120F0E;
-  --surface: rgba(30, 26, 25, 0.85);
-  --surface-border: rgba(78, 65, 62, 0.4);
-  --text-primary: #F3EFEF;
-  --text-secondary: #AFA09C;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.4);
-  --glass-bg: rgba(30, 26, 25, 0.65);
-  --glass-border: rgba(78, 65, 62, 0.2);
+  --background: #1C1310; /* Roasted coffee bean base */
+  --surface: rgba(46, 34, 30, 0.9); /* Dark espresso cream */
+  --surface-border: rgba(109, 76, 65, 0.35); /* Coffee brown border */
+  --text-primary: #F5EBE6; /* Soft latte cream text */
+  --text-secondary: #C7B299; /* Smooth caramel secondary text */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.5);
+  --glass-bg: rgba(46, 34, 30, 0.7);
+  --glass-border: rgba(109, 76, 65, 0.2);
 }
 
 /* Reset and Global Styles */

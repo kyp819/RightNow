@@ -354,7 +354,7 @@ function App() {
             <Coffee size={26} />
             <span>RightNow TO</span>
           </div>
-          <span className="brand-tagline">Real-Time AI-Driven Toronto Cafe Guide</span>
+          <span className="brand-tagline">Real-Time Toronto Cafe Guide</span>
         </div>
 
         <div className="header-meta">
@@ -420,7 +420,7 @@ function App() {
             <div className="section-title-bar">
               <h2 className="section-title">
                 <Sparkles size={20} style={{ color: 'rgb(var(--primary-rgb))' }} />
-                <span>AI Recommended Spots Right Now</span>
+                <span>Recommended Spots Right Now</span>
               </h2>
               <button className="reload-btn" onClick={fetchAllData}>
                 <RefreshCw size={14} />
@@ -432,7 +432,7 @@ function App() {
               <div className="fallback-banner">
                 <AlertTriangle size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
                 <span>
-                  <strong>Live AI & Places APIs are currently rate-limited (Quota Exceeded).</strong> Showing pre-loaded curated cafes so you can test all details, navigation, and live vibe check features.
+                  <strong>Live Recommendations & Places APIs are currently rate-limited (Quota Exceeded).</strong> Showing pre-loaded curated cafes so you can test all details, navigation, and live vibe check features.
                 </span>
               </div>
             )}
