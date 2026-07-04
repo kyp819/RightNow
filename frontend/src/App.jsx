@@ -397,25 +397,9 @@ function App() {
             </div>
             
             <h2 className="loading-title">Wait, we are preparing the list for you...</h2>
-            <p className="loading-subtitle">Chaining live weather, places, and Gemini AI insights</p>
             
             <div className="loading-progress-bar">
               <div className="loading-progress-fill"></div>
-            </div>
-            
-            <div className="loading-steps">
-              <div className="loading-step active">
-                <span className="step-bullet"></span>
-                <span>Fetching local weather status</span>
-              </div>
-              <div className="loading-step active">
-                <span className="step-bullet"></span>
-                <span>Polling Google Places database</span>
-              </div>
-              <div className="loading-step active">
-                <span className="step-bullet"></span>
-                <span>Analyzing best spots via Gemini 3 Flash</span>
-              </div>
             </div>
           </div>
         </div>
