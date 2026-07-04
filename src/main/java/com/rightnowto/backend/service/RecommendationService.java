@@ -15,12 +15,15 @@ public class RecommendationService {
     private final WeatherService weatherService;
     private final PlacesService placesService;
     private final VibeCheckRepository vibeCheckRepository;
-    private final RestClient restClient = RestClient.create();
+    private final RestClient restClient;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${gemini.api.key}")
     private String geminiApiKey;
+
+    @Value("${gemini.model:google/gemini-2.5-flash}")
+    private String geminiModel;
 
     public RecommendationService(WeatherService weatherService,
             PlacesService placesService,
@@ -28,6 +31,12 @@ public class RecommendationService {
         this.weatherService = weatherService;
         this.placesService = placesService;
         this.vibeCheckRepository = vibeCheckRepository;
+        org.springframework.http.client.SimpleClientHttpRequestFactory factory = new org.springframework.http.client.SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(10000);
+        factory.setReadTimeout(30000);
+        this.restClient = RestClient.builder()
+                .requestFactory(factory)
+                .build();
     }
 
     public List<Map<String, Object>> getRecommendations() {
@@ -45,41 +54,45 @@ public class RecommendationService {
                     + "{\"recommendations\": [{\"placeName\": \"...\", \"reason\": \"...\", \"Type\"}]}";
 
             Map<String, Object> requestBody = Map.of(
-                    "model", "nvidia/nemotron-3-ultra-550b-a55b:free",
-                    "messages", List.of(
+                    "contents", List.of(
                             Map.of(
-                                    "role", "user",
-                                    "content", prompt
+                                    "parts", List.of(
+                                            Map.of("text", prompt)
+                                    )
                             )
                     )
             );
 
             Map<String, Object> response = restClient.post()
-                    .uri("https://openrouter.ai/api/v1/chat/completions")
+                    .uri("https://generativelanguage.googleapis.com/v1beta/models/" + geminiModel + ":generateContent?key=" + geminiApiKey)
                     .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + geminiApiKey)
                     .body(requestBody)
                     .retrieve()
                     .body(Map.class);
 
-            if (response == null || response.get("choices") == null) {
-                return List.of(Map.of("error", "No response from OpenRouter"));
+            if (response == null || response.get("candidates") == null) {
+                return List.of(Map.of("error", "No response from Gemini API"));
             }
 
-            List<Map<String, Object>> choices = (List<Map<String, Object>>) response.get("choices");
+            List<Map<String, Object>> candidates = (List<Map<String, Object>>) response.get("candidates");
 
-            if (choices.isEmpty()) {
-                return List.of(Map.of("error", "OpenRouter returned no choices"));
+            if (candidates.isEmpty()) {
+                return List.of(Map.of("error", "Gemini API returned no candidates"));
             }
 
-            Map<String, Object> firstChoice = choices.get(0);
-            Map<String, Object> message = (Map<String, Object>) firstChoice.get("message");
+            Map<String, Object> firstCandidate = candidates.get(0);
+            Map<String, Object> content = (Map<String, Object>) firstCandidate.get("content");
 
-            if (message == null || message.get("content") == null) {
-                return List.of(Map.of("error", "OpenRouter response has no message content"));
+            if (content == null || content.get("parts") == null) {
+                return List.of(Map.of("error", "Gemini response has no message content"));
             }
 
-            String responseText = (String) message.get("content");
+            List<Map<String, Object>> parts = (List<Map<String, Object>>) content.get("parts");
+            if (parts.isEmpty()) {
+                return List.of(Map.of("error", "Gemini response has no parts"));
+            }
+
+            String responseText = (String) parts.get(0).get("text");
             
             // Clean markdown JSON formatting if present
             if (responseText.contains("```json")) {
@@ -99,6 +112,7 @@ public class RecommendationService {
             return (List<Map<String, Object>>) parsed.get("recommendations");
 
         } catch (Exception e) {
+            e.printStackTrace();
             return List.of(Map.of("error", "Something went wrong" + e.getMessage()));
         }
     }
