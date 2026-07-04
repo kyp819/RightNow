@@ -1,113 +1,57 @@
-/* Custom CSS Design System - RightNow TO */
+/* index.css — Clean Toronto Theme — RightNow TO */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+/* ─── Color Tokens ─── */
 :root {
-  /* Core Colors (Cafe Theme) */
-  --primary-rgb: 109, 76, 65; /* #6D4C41 - Roasted Coffee Brown */
-  --primary-dark-rgb: 62, 39, 35; /* #3E2723 - Deep Espresso Dark Brown */
-  --secondary-rgb: 188, 170, 164; /* #BCAAA4 - Latte Milk froth */
+  /* Light Theme (Clean & Bright) */
+  --bg-color: #f8fafc;
+  --bg-secondary: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
   
-  /* Status Colors */
-  --status-busy: #B71C1C; /* Deep warm red */
-  --status-chill: #2E7D32; /* Cozy forest green */
-  --status-empty: #795548; /* Light roasted cocoa brown */
+  --border-color: #e2e8f0;
+  --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
   
-  /* Light Theme Variables */
-  --background: #FDFBF9; /* Warm Vanilla Almond Cream */
-  --surface: rgba(253, 245, 237, 0.9); /* Warm froth cream */
-  --surface-border: rgba(141, 110, 99, 0.25); /* Medium Cocoa Border */
-  --text-primary: #3E2723; /* Dark roasted espresso */
-  --text-secondary: #795548; /* Warm coffee brown */
-  --shadow-sm: 0 2px 8px rgba(62, 39, 35, 0.04);
-  --shadow-md: 0 8px 30px rgba(62, 39, 35, 0.08);
-  --glass-bg: rgba(253, 245, 237, 0.7);
-  --glass-border: rgba(253, 245, 237, 0.4);
-  
-  /* Fonts */
-  --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Toronto Accents */
+  --accent-red: #E8312A;
+  --accent-green: #4CAF50;
 }
 
-[data-theme="dark"] {
-  --background: #1C1310; /* Roasted coffee bean base */
-  --surface: rgba(46, 34, 30, 0.9); /* Dark espresso cream */
-  --surface-border: rgba(109, 76, 65, 0.35); /* Coffee brown border */
-  --text-primary: #F5EBE6; /* Soft latte cream text */
-  --text-secondary: #C7B299; /* Smooth caramel secondary text */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.5);
-  --glass-bg: rgba(46, 34, 30, 0.7);
-  --glass-border: rgba(109, 76, 65, 0.2);
+[data-theme='dark'] {
+  /* Dark Theme (Sleek & Deep) */
+  --bg-color: #0f172a;
+  --bg-secondary: #1e293b;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  
+  --border-color: #334155;
+  --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.2);
 }
 
-/* Reset and Global Styles */
+/* ─── Global Reset & Typography ─── */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 body {
-  font-family: var(--font-body);
-  background-color: var(--background);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-color);
   color: var(--text-primary);
-  min-height: 100vh;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(var(--primary-rgb), 0.05) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(var(--secondary-rgb), 0.08) 0px, transparent 50%);
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
-/* Smooth Scroll */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Scrollbar Styles */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--background);
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(var(--primary-rgb), 0.2);
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(var(--primary-rgb), 0.4);
-}
-
-/* Utility Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-.animate-pulse {
-  animation: pulse 1.8s ease-in-out infinite;
+button {
+  font-family: inherit;
 }
