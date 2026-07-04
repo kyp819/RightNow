@@ -382,9 +382,42 @@ function App() {
 
       {/* DASHBOARD BODY */}
       {loadingData ? (
-        <div className="loading-state animate-fade-in">
-          <div className="loading-spinner"></div>
-          <h2 style={{ fontSize: '18px', fontWeight: 600 }}>Chaining Weather + Places + AI Recommendations...</h2>
+        <div className="loading-state-container animate-fade-in">
+          <div className="loading-card">
+            <div className="coffee-loader">
+              <div className="coffee-cup">
+                <div className="coffee-steam">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <div className="cup-body"></div>
+                <div className="cup-handle"></div>
+              </div>
+            </div>
+            
+            <h2 className="loading-title">Wait, we are preparing the list for you...</h2>
+            <p className="loading-subtitle">Chaining live weather, places, and Gemini AI insights</p>
+            
+            <div className="loading-progress-bar">
+              <div className="loading-progress-fill"></div>
+            </div>
+            
+            <div className="loading-steps">
+              <div className="loading-step active">
+                <span className="step-bullet"></span>
+                <span>Fetching local weather status</span>
+              </div>
+              <div className="loading-step active">
+                <span className="step-bullet"></span>
+                <span>Polling Google Places database</span>
+              </div>
+              <div className="loading-step active">
+                <span className="step-bullet"></span>
+                <span>Analyzing best spots via Gemini 3 Flash</span>
+              </div>
+            </div>
+          </div>
         </div>
       ) : errorMsg ? (
         <div className="error-state animate-fade-in">
