@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/weather",
+      "destination": "https://rightnow-1.onrender.com/api/weather"
+    },
+    {
+      "source": "/api/places",
+      "destination": "https://rightnow-1.onrender.com/api/places"
+    }
+  ]
+}
