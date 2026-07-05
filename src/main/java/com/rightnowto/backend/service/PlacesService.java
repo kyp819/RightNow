@@ -25,7 +25,17 @@ public class PlacesService {
                                 .build();
         }
 
+        private Map<String, Object> cachedPlaces = null;
+        private long lastFetchTime = 0;
+        private static final long CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes
+
         public Map<String, Object> getNearbyPlaces() {
+                long now = System.currentTimeMillis();
+                if (cachedPlaces != null && (now - lastFetchTime) < CACHE_DURATION_MS) {
+                        System.out.println("Returning cached places (saves API cost)");
+                        return cachedPlaces;
+                }
+
                 try {
                         Map<String, Object> requestBody = Map.of(
                                         "includedTypes",
@@ -40,7 +50,7 @@ public class PlacesService {
                                                                                         "longitude", Location.LON),
                                                                         "radius", 1500.0)));
 
-                        return restClient.post()
+                        Map<String, Object> response = restClient.post()
                                         .uri("https://places.googleapis.com/v1/places:searchNearby")
                                         .header("X-Goog-Api-Key", apiKey)
                                         .header("X-Goog-FieldMask",
@@ -48,11 +58,16 @@ public class PlacesService {
                                                                         "places.formattedAddress," +
                                                                         "places.location," +
                                                                         "places.regularOpeningHours," +
-                                                                        "places.nationalPhoneNumber")
+                                                                        "places.nationalPhoneNumber," +
+                                                                        "places.primaryType")
                                         .body(requestBody)
                                         .retrieve()
                                         .body(new ParameterizedTypeReference<Map<String, Object>>() {
                                         });
+
+                        cachedPlaces = response;
+                        lastFetchTime = now;
+                        return response;
                 } catch (Exception e) {
                         throw new RuntimeException("Failed to fetch nearby places", e);
                 }
