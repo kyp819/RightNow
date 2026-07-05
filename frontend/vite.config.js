@@ -6,10 +6,17 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
+      '/api/weather': {
+        target: 'https://rightnow-1.onrender.com',
+        changeOrigin: true
+      },
+      '/api/places': {
+        target: 'https://rightnow-1.onrender.com',
+        changeOrigin: true
+      },
       '/api': {
-        target: 'http://localhost:8081',
-        changeOrigin: true,
-        secure: false,
+        target: 'http://localhost:8082',
+        changeOrigin: true
       }
     }
   }
