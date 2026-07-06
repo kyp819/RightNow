@@ -24,8 +24,9 @@ public class VibeCheckController {
         vibeCheck.setTimestamp(LocalDateTime.now());
         return vibeCheckRepository.save(vibeCheck);
     }
+
     @GetMapping("/api/vibe-checks")
     public List<VibeCheck> getAllVibeChecks() {
-        return vibeCheckRepository.findAll();
+        return vibeCheckRepository.findTop30ByOrderByTimestampDesc();
     }
 }

@@ -1,6 +1,5 @@
 package com.rightnowto.backend.entity;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,9 +14,8 @@ public class VibeCheck {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Boolean isVeganFriendly;
-    private String placeId;
-    private String status;
+    private String locationName;
+    private String vibe;
     private LocalDateTime timestamp;
 
     public Long getId() {
@@ -28,23 +26,20 @@ public class VibeCheck {
         this.id = id;
     }
 
-
-
-    public String getPlaceId() {
-        return placeId;
+    public String getLocationName() {
+        return locationName;
     }
 
-    public void setPlaceId(String placeId) {
-        this.placeId = placeId;
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
     }
 
-
-    public String getStatus() {
-        return status;
+    public String getVibe() {
+        return vibe;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setVibe(String vibe) {
+        this.vibe = vibe;
     }
 
     public LocalDateTime getTimestamp() {
@@ -54,13 +49,4 @@ public class VibeCheck {
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
-
-    public Boolean isVeganFriendly() {
-        return isVeganFriendly;
-    }
-
-    public void setVeganFriendly(Boolean veganFriendly) {
-        this.isVeganFriendly = veganFriendly;
-    }
-
 }
