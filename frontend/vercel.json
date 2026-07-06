@@ -7,6 +7,10 @@
     {
       "source": "/api/places",
       "destination": "https://rightnow-1.onrender.com/api/places"
+    },
+    {
+      "source": "/api/recommendations",
+      "destination": "https://rightnow-1.onrender.com/api/recommendations"
     }
   ]
 }

@@ -53,13 +53,7 @@ public class PlacesService {
                         Map<String, Object> response = restClient.post()
                                         .uri("https://places.googleapis.com/v1/places:searchNearby")
                                         .header("X-Goog-Api-Key", apiKey)
-                                        .header("X-Goog-FieldMask",
-                                                        "places.displayName," +
-                                                                        "places.formattedAddress," +
-                                                                        "places.location," +
-                                                                        "places.regularOpeningHours," +
-                                                                        "places.nationalPhoneNumber," +
-                                                                        "places.primaryType")
+                                        .header("X-Goog-FieldMask", "*")
                                         .body(requestBody)
                                         .retrieve()
                                         .body(new ParameterizedTypeReference<Map<String, Object>>() {

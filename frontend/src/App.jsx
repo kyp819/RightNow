@@ -207,7 +207,7 @@ export default function RightNowTO() {
   const loadRecs = useCallback(async () => {
     try {
       // Fetching from Recommendation API with a 60s timeout
-      const data = await fetchJSON("/api/recommendation", { timeout: 60000 });
+      const data = await fetchJSON("/api/recommendations", { timeout: 60000 });
       setRecs(Array.isArray(data) ? data : []);
       setThrottle("");
     } catch (err) {
