@@ -206,7 +206,7 @@ export default function RightNowTO() {
 
   const loadRecs = useCallback(async () => {
     try {
-      const data = await fetchJSON("https://rightnow-1.onrender.com/api/recommendation", { timeout: 30000 });
+      const data = await fetchJSON("/api/recommendation", { timeout: 30000 });
       setRecs(Array.isArray(data) ? data : []);
       setThrottle("");
     } catch (err) {

@@ -15,7 +15,7 @@ export default defineConfig({
         changeOrigin: true
       },
       '/api': {
-        target: 'http://localhost:8082',
+        target: 'https://rightnow-1.onrender.com',
         changeOrigin: true
       }
     }
