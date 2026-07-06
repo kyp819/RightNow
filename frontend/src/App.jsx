@@ -208,6 +208,9 @@ export default function RightNowTO() {
     try {
       // Fetching from Recommendation API with a 60s timeout
       const data = await fetchJSON("/api/recommendations", { timeout: 60000 });
+      if (Array.isArray(data) && data.length > 0 && data[0].error) {
+        throw new Error(data[0].error);
+      }
       setRecs(Array.isArray(data) ? data : []);
       setThrottle("");
     } catch (err) {
