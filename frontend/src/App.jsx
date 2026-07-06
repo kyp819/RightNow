@@ -170,65 +170,6 @@ function timeAgo(ts) {
   return h < 24 ? `${h} hr ago` : `${Math.floor(h / 24)} d ago`;
 }
 
-// Added local recommendations data
-const LOCAL_RECS = [
-  {
-    "placeName": "Mizzica Gelateria & Cafe",
-    "reason": "At 24.6°C on a warm Saturday afternoon, this is the perfect spot to cool down with some of the best authentic Italian gelato in the city.",
-    "Type": "Recommendation"
-  },
-  {
-    "placeName": "Cactus Club Cafe",
-    "reason": "A vibrant spot with a fantastic patio, ideal for enjoying upscale casual bites and refreshing cocktails on a sunny weekend afternoon.",
-    "Type": "Recommendation"
-  },
-  {
-    "placeName": "Earls Kitchen + Bar - Financial District (King & University)",
-    "reason": "Features a lively outdoor patio that is perfect for soaking up the Saturday sun while enjoying a diverse menu of global dishes and craft drinks.",
-    "Type": "Recommendation"
-  },
-  {
-    "placeName": "JOEY King St",
-    "reason": "An upscale, high-energy venue with a great patio, making it a prime location for social drinks and late lunch on a warm July afternoon.",
-    "Type": "Recommendation"
-  },
-  {
-    "placeName": "King Taps First Canadian Place",
-    "reason": "With a massive selection of beers on tap and a spacious outdoor area, it's a great place to hang out with friends on a Saturday afternoon.",
-    "Type": "Recommendation"
-  },
-  {
-    "placeName": "PAI",
-    "reason": "Beat the dinner rush by visiting this legendary Northern Thai spot for a late lunch, offering incredibly flavorful dishes in a bustling, fun atmosphere.",
-    "Type": "Recommendation"
-  },
-  {
-    "placeName": "Fox on John",
-    "reason": "A central downtown hub with a great patio, offering a lively weekend vibe, perfect for casual pub fare and afternoon drinks.",
-    "Type": "Recommendation"
-  },
-  {
-    "placeName": "The Rec Room Roundhouse",
-    "reason": "A fantastic indoor entertainment and dining space, perfect if you want to escape the afternoon heat for some arcade games, beers, and casual eats.",
-    "Type": "Recommendation"
-  },
-  {
-    "placeName": "Cafe Landwer",
-    "reason": "Offers an exceptional Mediterranean menu with plenty of delicious vegetarian and vegan options like plant-based shawarma and fresh salads, plus a great patio.",
-    "Type": "Vegetarian/Vegan"
-  },
-  {
-    "placeName": "Koh Lipe Thai Kitchen",
-    "reason": "A cozy spot featuring a dedicated selection of flavorful vegetarian and vegan Thai curries, noodle dishes, and stir-fries.",
-    "Type": "Vegetarian/Vegan"
-  },
-  {
-    "placeName": "MATCHA MATCHA",
-    "reason": "Perfect for a refreshing, plant-based afternoon pick-me-up with their iced matcha lattes made with oat or almond milk and vegan-friendly treats.",
-    "Type": "Vegetarian/Vegan"
-  }
-];
-
 const VIBE_CHIPS = ["🔥 Busy", "😌 Chill", "🎶 Lively", "🌙 Quiet", "🪑 Seats open", "⏳ Long wait"];
 
 /* ---------------------------------------------------------------- fetch */
@@ -264,9 +205,15 @@ export default function RightNowTO() {
   }, []);
 
   const loadRecs = useCallback(async () => {
-    // Use local data instead of calling API
-    setRecs(LOCAL_RECS);
-    setThrottle("");
+    try {
+      const data = await fetchJSON("https://rightnow-1.onrender.com/api/recommendation", { timeout: 30000 });
+      setRecs(Array.isArray(data) ? data : []);
+      setThrottle("");
+    } catch (err) {
+      console.error("Failed to load recommendations:", err);
+      setRecs([]);
+      setThrottle("Error loading picks.");
+    }
   }, []);
 
   useEffect(() => {
