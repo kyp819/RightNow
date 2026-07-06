@@ -17,12 +17,7 @@ public class PlacesService {
         private final RestClient restClient;
 
         public PlacesService() {
-                org.springframework.http.client.SimpleClientHttpRequestFactory factory = new org.springframework.http.client.SimpleClientHttpRequestFactory();
-                factory.setConnectTimeout(3000);
-                factory.setReadTimeout(3000);
-                this.restClient = RestClient.builder()
-                                .requestFactory(factory)
-                                .build();
+                this.restClient = RestClient.builder().build();
         }
 
         private Map<String, Object> cachedPlaces = null;
@@ -53,7 +48,13 @@ public class PlacesService {
                         Map<String, Object> response = restClient.post()
                                         .uri("https://places.googleapis.com/v1/places:searchNearby")
                                         .header("X-Goog-Api-Key", apiKey)
-                                        .header("X-Goog-FieldMask", "*")
+                                        .header("X-Goog-FieldMask",
+                                                        "places.displayName," +
+                                                                        "places.formattedAddress," +
+                                                                        "places.location," +
+                                                                        "places.regularOpeningHours," +
+                                                                        "places.nationalPhoneNumber," +
+                                                                        "places.primaryType")
                                         .body(requestBody)
                                         .retrieve()
                                         .body(new ParameterizedTypeReference<Map<String, Object>>() {
