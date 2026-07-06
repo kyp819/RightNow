@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.bind.annotation.RequestParam;
+
 @RestController
 public class RecommendationController {
 
@@ -17,8 +19,11 @@ public class RecommendationController {
     }
 
     @GetMapping("/api/recommendations")
-    public List<Map<String, Object>> getRecommendations() {
-        return recommendationService.getRecommendations();
+    public List<Map<String, Object>> getRecommendations(
+            @RequestParam(required = false) Double lat,
+            @RequestParam(required = false) Double lon,
+            @RequestParam(required = false) String city) {
+        return recommendationService.getRecommendations(lat, lon, city);
     }
 
 }

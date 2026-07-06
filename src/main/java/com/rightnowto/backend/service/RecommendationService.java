@@ -39,11 +39,12 @@ public class RecommendationService {
                 .build();
     }
 
-    public List<Map<String, Object>> getRecommendations() {
+    public List<Map<String, Object>> getRecommendations(Double lat, Double lon, String city) {
         // --- GEMINI API CODE ---
         try {
-            Map<String, Object> weather = weatherService.getCurrentWeather();
-            Map<String, Object> places = placesService.getNearbyPlaces();
+            String activeCity = city != null ? city : "Toronto";
+            Map<String, Object> weather = weatherService.getCurrentWeather(lat, lon);
+            Map<String, Object> places = placesService.getNearbyPlaces(lat, lon);
             List<VibeCheck> vibeChecks = vibeCheckRepository.findAll();
             
             // --- CLEANED PROMPT LOGIC ---
@@ -70,7 +71,7 @@ public class RecommendationService {
                 ? "Here are recent crowd vibe reports from people on the street right now:\n" + vibeList.toString()
                 : "No vibe reports yet.";
 
-            String prompt = "It is currently " + weather.get("current") + " in downtown Toronto.\n"
+            String prompt = "It is currently " + weather.get("current") + " in downtown " + activeCity + ".\n"
             + "Here is the STRICT list of nearby food and drink spots:\n"
             + cleanPlacesList.toString() + "\n"
             + vibeSection + "\n"

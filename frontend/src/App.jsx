@@ -198,6 +198,32 @@ export default function RightNowTO() {
   const [throttle, setThrottle] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const [revealed, setRevealed] = useState(false);
+  const [activeCity, setActiveCity] = useState(() => {
+    try {
+      const saved = localStorage.getItem("activeCity");
+      return saved ? JSON.parse(saved) : { name: "Toronto", lat: 43.6532, lon: -79.3832 };
+    } catch {
+      return { name: "Toronto", lat: 43.6532, lon: -79.3832 };
+    }
+  });
+  const [logoClicks, setLogoClicks] = useState(0);
+
+  const handleLogoClick = () => {
+    setLogoClicks(prev => {
+      const next = prev + 1;
+      if (next >= 5) {
+        setActiveCity(curr => {
+          const updated = curr.name === "Toronto"
+            ? { name: "San Francisco", lat: 37.7749, lon: -122.4194 }
+            : { name: "Toronto", lat: 43.6532, lon: -79.3832 };
+          localStorage.setItem("activeCity", JSON.stringify(updated));
+          return updated;
+        });
+        return 0;
+      }
+      return next;
+    });
+  };
 
   useEffect(() => {
     const id = setInterval(() => setClock(new Date()), 1000);
@@ -207,7 +233,7 @@ export default function RightNowTO() {
   const loadRecs = useCallback(async () => {
     try {
       // Fetching from Recommendation API with a 60s timeout
-      const data = await fetchJSON("/api/recommendations", { timeout: 60000 });
+      const data = await fetchJSON(`/api/recommendations?lat=${activeCity.lat}&lon=${activeCity.lon}&city=${activeCity.name}`, { timeout: 60000 });
       if (Array.isArray(data) && data.length > 0 && data[0].error) {
         throw new Error(data[0].error);
       }
@@ -218,15 +244,21 @@ export default function RightNowTO() {
       setRecs([]);
       setThrottle("Error loading picks. The board might be catching up.");
     }
-  }, []);
+  }, [activeCity]);
 
   useEffect(() => {
+    setRecs(null);
+    setWeather(null);
+    setPlaces(null);
+    setVibes(null);
+    setRevealed(false);
+
     (async () => {
-      const pWeather = fetchJSON("/api/weather")
+      const pWeather = fetchJSON(`/api/weather?lat=${activeCity.lat}&lon=${activeCity.lon}`)
         .then(w => setWeather(w))
         .catch(() => setWeather(null));
         
-      const pPlaces = fetchJSON("/api/places")
+      const pPlaces = fetchJSON(`/api/places?lat=${activeCity.lat}&lon=${activeCity.lon}`)
         .then(d => {
           if (Array.isArray(d)) setPlaces(d);
           else if (d?.places && Array.isArray(d.places)) setPlaces(d.places);
@@ -247,7 +279,7 @@ export default function RightNowTO() {
     })();
     const t = setTimeout(() => setRevealed(true), 60);
     return () => clearTimeout(t);
-  }, [loadRecs]);
+  }, [loadRecs, activeCity]);
 
   async function refreshPicks() {
     if (refreshing) return;
@@ -289,8 +321,8 @@ export default function RightNowTO() {
         <div className="rn-brand">
           <CNTower />
           <div>
-            <div className="rn-word">RIGHTNOW<span className="rn-word-to">·TO</span></div>
-            <div className="rn-sub">Downtown Toronto · live picks</div>
+            <div className="rn-word" style={{ userSelect: "none" }}>RIGHTNOW<span className="rn-word-to" onClick={handleLogoClick} style={{ cursor: "pointer" }}>·TO</span></div>
+            <div className="rn-sub">Downtown {activeCity.name} · live picks</div>
           </div>
         </div>
         <div className="rn-clock">
@@ -331,7 +363,7 @@ export default function RightNowTO() {
           <div className="rn-board-head" role="row">
             <span>Scene</span><span>Spot</span><span>Type</span><span>Why now</span>
           </div>
-          {recs == null && !throttle && <CNTowerLoader />}
+          {recs == null && !throttle && <CNTowerLoader city={activeCity.name} />}
           {recs && recs.length === 0 && !throttle && (
             <div className="rn-empty">No picks on the board yet. Hit refresh to pull the latest.</div>
           )}
@@ -353,7 +385,7 @@ export default function RightNowTO() {
                 <span className="rn-spot" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "2px" }}>
                   {matchedPlace ? (
                     <a 
-                      href={matchedPlace.location ? `https://www.google.com/maps/dir/?api=1&destination=${matchedPlace.location.latitude},${matchedPlace.location.longitude}` : `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address || r.placeName + " Toronto")}`}
+                      href={matchedPlace.location ? `https://www.google.com/maps/dir/?api=1&destination=${matchedPlace.location.latitude},${matchedPlace.location.longitude}` : `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address || r.placeName + " " + activeCity.name)}`}
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="rn-spot-link"
@@ -407,11 +439,11 @@ export default function RightNowTO() {
             const open = p?.regularOpeningHours ? p.regularOpeningHours.openNow : true;
             const phone = p?.nationalPhoneNumber;
             const name = p?.placeName || p?.displayName?.text || "Unnamed spot";
-            const address = p?.formattedAddress || "Downtown Toronto";
+            const address = p?.formattedAddress || `Downtown ${activeCity.name}`;
             return (
               <div className="rn-place" key={i}>
                 <a 
-                  href={p.location ? `https://www.google.com/maps/dir/?api=1&destination=${p.location.latitude},${p.location.longitude}` : `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent((p?.formattedAddress || p?.displayName?.text || "") + " Toronto")}`}
+                  href={p.location ? `https://www.google.com/maps/dir/?api=1&destination=${p.location.latitude},${p.location.longitude}` : `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent((p?.formattedAddress || p?.displayName?.text || "") + " " + activeCity.name)}`}
                   target="_blank" 
                   rel="noopener noreferrer"
                   style={{ textDecoration: "none", display: "block" }}
@@ -437,7 +469,7 @@ export default function RightNowTO() {
       {/* ---- vibe checks ---- */}
       <VibeSection vibes={vibes} places={places} onSubmit={submitVibe} />
 
-      <SkylineFooter />
+      <SkylineFooter city={activeCity.name} />
     </div>
   );
 }
@@ -521,7 +553,7 @@ function CNTower() {
   );
 }
 
-function SkylineFooter({ demo }) {
+function SkylineFooter({ city }) {
   return (
     <footer className="rn-footer">
       <svg className="rn-skyline" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
@@ -545,7 +577,7 @@ function SkylineFooter({ demo }) {
       </svg>
       <div className="rn-footer-line">
         <span>RightNowTO</span>
-        <span>Live from downtown Toronto</span>
+        <span>Live from downtown {city || "Toronto"}</span>
       </div>
     </footer>
   );
@@ -590,7 +622,7 @@ function BoardSkeleton() {
   );
 }
 
-function CNTowerLoader() {
+function CNTowerLoader({ city }) {
   return (
     <div className="rn-cn-loader">
        <div className="rn-cn-pulse-container">
@@ -598,7 +630,7 @@ function CNTowerLoader() {
           <div className="rn-cn-beacon" />
           <div className="rn-cn-radar" />
        </div>
-       <div className="rn-cn-text">Scanning downtown Toronto...</div>
+       <div className="rn-cn-text">Scanning downtown {city || "Toronto"}...</div>
     </div>
   );
 }

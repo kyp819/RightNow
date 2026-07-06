@@ -23,14 +23,16 @@ public class WeatherService {
 //    private static final String TORONTO_LAT = "43.6532";
 //    private static final String TORONTO_LON = "-79.3832";
 
-    public Map<String,Object> getCurrentWeather()
+    public Map<String,Object> getCurrentWeather(Double lat, Double lon)
     {
         try {
+            double latitude = lat != null ? lat : Location.LAT;
+            double longitude = lon != null ? lon : Location.LON;
             String url = "https://api.open-meteo.com/v1/forecast"
-                    + "?latitude="+ Location.LAT
-                    +"&longitude="+ Location.LON
+                    + "?latitude="+ latitude
+                    +"&longitude="+ longitude
                     + "&current=temperature_2m,weather_code"
-                    +"&timezone=America/Toronto";
+                    +"&timezone=auto";
 
             return restClient.get().uri(url).retrieve().body(new ParameterizedTypeReference<Map<String, Object>>() {});
         } catch (Exception e) {

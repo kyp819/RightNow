@@ -21,12 +21,20 @@ public class PlacesService {
         }
 
         private Map<String, Object> cachedPlaces = null;
+        private Double cachedLat = null;
+        private Double cachedLon = null;
         private long lastFetchTime = 0;
         private static final long CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes
 
-        public Map<String, Object> getNearbyPlaces() {
+        public Map<String, Object> getNearbyPlaces(Double lat, Double lon) {
+                double latitude = lat != null ? lat : Location.LAT;
+                double longitude = lon != null ? lon : Location.LON;
                 long now = System.currentTimeMillis();
-                if (cachedPlaces != null && (now - lastFetchTime) < CACHE_DURATION_MS) {
+                
+                if (cachedPlaces != null && cachedLat != null && cachedLon != null 
+                    && Math.abs(cachedLat - latitude) < 0.0001 
+                    && Math.abs(cachedLon - longitude) < 0.0001 
+                    && (now - lastFetchTime) < CACHE_DURATION_MS) {
                         System.out.println("Returning cached places (saves API cost)");
                         return cachedPlaces;
                 }
@@ -41,8 +49,8 @@ public class PlacesService {
                                         "locationRestriction", Map.of(
                                                         "circle", Map.of(
                                                                         "center", Map.of(
-                                                                                        "latitude", Location.LAT,
-                                                                                        "longitude", Location.LON),
+                                                                                        "latitude", latitude,
+                                                                                        "longitude", longitude),
                                                                         "radius", 1500.0)));
 
                         Map<String, Object> response = restClient.post()
@@ -61,6 +69,8 @@ public class PlacesService {
                                         });
 
                         cachedPlaces = response;
+                        cachedLat = latitude;
+                        cachedLon = longitude;
                         lastFetchTime = now;
                         return response;
                 } catch (Exception e) {
