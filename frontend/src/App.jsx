@@ -206,8 +206,17 @@ export default function RightNowTO() {
 
   const loadRecs = useCallback(async () => {
     try {
-      const data = await fetchJSON("/api/recommendation", { timeout: 30000 });
-      setRecs(Array.isArray(data) ? data : []);
+      // Temporarily fetching from Places API directly instead of Recommendation API
+      const data = await fetchJSON("/api/places", { timeout: 30000 });
+      const placesList = Array.isArray(data) ? data : (data?.places || []);
+      
+      const mappedRecs = placesList.map(p => ({
+        placeName: p.placeName || p.displayName?.text,
+        Type: p.primaryType || "Spot",
+        reason: "Direct from Places API (Recommendation API temporarily bypassed)"
+      }));
+      
+      setRecs(mappedRecs);
       setThrottle("");
     } catch (err) {
       console.error("Failed to load recommendations:", err);
