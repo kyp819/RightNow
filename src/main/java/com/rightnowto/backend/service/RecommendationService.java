@@ -59,11 +59,22 @@ public class RecommendationService {
                 }
             }
             
+            StringBuilder vibeList = new StringBuilder();
+            for (VibeCheck v : vibeChecks) {
+                if (v.getLocationName() != null && v.getVibe() != null) {
+                    vibeList.append("- ").append(v.getLocationName())
+                            .append(": ").append(v.getVibe()).append("\n");
+                }
+            }
+            String vibeSection = vibeList.length() > 0
+                ? "Here are recent crowd vibe reports from people on the street right now:\n" + vibeList.toString()
+                : "No vibe reports yet.";
+
             String prompt = "It is currently " + weather.get("current") + " in downtown Toronto.\n"
-            + "Here is the STRICT list of nearby food and drink spots:\n" 
+            + "Here is the STRICT list of nearby food and drink spots:\n"
             + cleanPlacesList.toString() + "\n"
-            + "Here are recent vibe checks: " + vibeChecks + ".\n"
-            + "Based on the weather, time, and vibe checks, recommend the best 8 - 10 food and drink spots from the STRICT list provided above.\n"
+            + vibeSection + "\n"
+            + "Based on the weather, time, and vibe reports, recommend the best 8 - 10 food and drink spots from the STRICT list provided above.\n"
             + "CRITICAL: You MUST ONLY recommend places that are EXACTLY in the list above. Do not recommend any place that is not in the list.\n"
             + "Make sure to include 3 - 4 food and drink spots from the list which are vegetarian and vegan.\n"
             + "For each, give a short plain-English reason.\n"
