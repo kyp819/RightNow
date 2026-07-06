@@ -206,22 +206,14 @@ export default function RightNowTO() {
 
   const loadRecs = useCallback(async () => {
     try {
-      // Temporarily fetching from Places API directly instead of Recommendation API
-      const data = await fetchJSON("/api/places", { timeout: 30000 });
-      const placesList = Array.isArray(data) ? data : (data?.places || []);
-      
-      const mappedRecs = placesList.map(p => ({
-        placeName: p.placeName || p.displayName?.text,
-        Type: p.primaryType || "Spot",
-        reason: "Direct from Places API (Recommendation API temporarily bypassed)"
-      }));
-      
-      setRecs(mappedRecs);
+      // Fetching from Recommendation API with a 60s timeout
+      const data = await fetchJSON("/api/recommendation", { timeout: 60000 });
+      setRecs(Array.isArray(data) ? data : []);
       setThrottle("");
     } catch (err) {
       console.error("Failed to load recommendations:", err);
       setRecs([]);
-      setThrottle("Error loading picks.");
+      setThrottle("Error loading picks. The board might be catching up.");
     }
   }, []);
 
