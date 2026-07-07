@@ -372,7 +372,7 @@ export default function RightNowTO() {
             const matchedPlace = places?.find(p => (p?.placeName || p?.displayName?.text) === r.placeName);
             const phone = matchedPlace?.nationalPhoneNumber;
             const address = matchedPlace?.formattedAddress;
-            const open = matchedPlace?.regularOpeningHours?.openNow;
+            const open = matchedPlace?.regularOpeningHours ? matchedPlace.regularOpeningHours.openNow : true;
 
             return (
               <div
