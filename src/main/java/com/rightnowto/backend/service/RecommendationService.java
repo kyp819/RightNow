@@ -78,7 +78,7 @@ public class RecommendationService {
             + "Based on the weather, time, and vibe reports, recommend the best 8 - 10 food and drink spots from the STRICT list provided above.\n"
             + "CRITICAL: You MUST ONLY recommend places that are EXACTLY in the list above. Do not recommend any place that is not in the list.\n"
             + "Make sure to include 3 - 4 food and drink spots from the list which are vegetarian and vegan.\n"
-            + "For each, give a short plain-English reason.\n"
+            + "For each, give a short and weather and time based plain-English reason and give ONLY open now spots only\n"
             + "Respond ONLY with valid JSON, no other text, in this exact format:\n"
             + "{\"recommendations\": [{\"placeName\": \"...\", \"reason\": \"...\", \"Type\"}]}";
             
