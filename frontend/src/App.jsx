@@ -200,6 +200,23 @@ export default function RightNowTO() {
   const [revealed, setRevealed] = useState(false);
   const [activeCity, setActiveCity] = useState({ name: "Toronto", lat: 43.6532, lon: -79.3832 });
 
+  const handleLocateMe = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setActiveCity({ name: "Current Location", lat: latitude, lon: longitude });
+      },
+      (error) => {
+        console.error("Error getting location:", error);
+        alert("Unable to retrieve your location");
+      }
+    );
+  };
+
   useEffect(() => {
     const id = setInterval(() => setClock(new Date()), 1000);
     return () => clearInterval(id);
@@ -297,7 +314,10 @@ export default function RightNowTO() {
           <CNTower />
           <div>
             <div className="rn-word" style={{ userSelect: "none" }}>RIGHTNOW<span className="rn-word-to">·TO</span></div>
-            <div className="rn-sub">Downtown {activeCity.name} · live picks</div>
+            <div className="rn-sub">
+              Downtown {activeCity.name} · live picks 
+              <button onClick={handleLocateMe} style={{ marginLeft: "10px", display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "10px", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", padding: "2px 6px", borderRadius: "4px", color: "var(--cream)", cursor: "pointer", verticalAlign: "middle" }}><LocationIcon /> Location now</button>
+            </div>
           </div>
         </div>
         <div className="rn-clock">
@@ -578,6 +598,15 @@ function SendIcon() {
   return (
     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M22 2 11 13" /><path d="M22 2 15 22l-4-9-9-4 20-7z" />
+    </svg>
+  );
+}
+
+function LocationIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z" />
+      <circle cx="12" cy="10" r="3" />
     </svg>
   );
 }
