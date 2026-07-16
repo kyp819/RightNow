@@ -53,6 +53,17 @@ public class RecommendationService {
             if (placesList != null) {
                 for (int i = 0; i < placesList.size(); i++) {
                     Map<String, Object> place = placesList.get(i);
+                    
+                    // Check if place is open
+                    Map<String, Object> openingHours = (Map<String, Object>) place.get("regularOpeningHours");
+                    boolean isOpen = true; // default to true if missing
+                    if (openingHours != null && openingHours.containsKey("openNow")) {
+                        isOpen = (Boolean) openingHours.get("openNow");
+                    }
+                    if (!isOpen) {
+                        continue; // skip closed places
+                    }
+                    
                     Map<String, String> displayName = (Map<String, String>) place.get("displayName");
                     String name = displayName != null ? displayName.get("text") : "Unknown Place";
                     String type = place.containsKey("primaryType") ? (String) place.get("primaryType") : "restaurant";
