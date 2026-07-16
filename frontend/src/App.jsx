@@ -199,6 +199,10 @@ export default function RightNowTO() {
   const [refreshing, setRefreshing] = useState(false);
   const [revealed, setRevealed] = useState(false);
   const [activeCity, setActiveCity] = useState({ name: "Toronto", lat: 43.6532, lon: -79.3832 });
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchRef = useRef(null);
 
   const handleLocateMe = () => {
     if (!navigator.geolocation) {
@@ -215,6 +219,42 @@ export default function RightNowTO() {
         alert("Unable to retrieve your location");
       }
     );
+  };
+
+  useEffect(() => {
+    if (!searchQuery || searchQuery.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      setIsSearching(true);
+      try {
+        const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchQuery)}&count=5&language=en&format=json`);
+        const data = await res.json();
+        setSearchResults(data.results || []);
+      } catch (err) {
+        console.error("Geocoding failed", err);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setSearchResults([]);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleCitySelect = (city) => {
+    setActiveCity({ name: city.name, lat: city.latitude, lon: city.longitude });
+    setSearchQuery("");
+    setSearchResults([]);
   };
 
   useEffect(() => {
@@ -310,13 +350,36 @@ export default function RightNowTO() {
 
       {/* ---- board header ---- */}
       <header className="rn-header">
-        <div className="rn-brand">
+        <div className="rn-brand" style={{ flex: 1, minWidth: "300px" }}>
           <CNTower />
-          <div>
+          <div style={{ flex: 1 }}>
             <div className="rn-word" style={{ userSelect: "none" }}>RIGHTNOW<span className="rn-word-to">·TO</span></div>
             <div className="rn-sub">
               Downtown {activeCity.name} · live picks 
               <button onClick={handleLocateMe} style={{ marginLeft: "10px", display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "10px", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", padding: "2px 6px", borderRadius: "4px", color: "var(--cream)", cursor: "pointer", verticalAlign: "middle" }}><LocationIcon /> Location now</button>
+            </div>
+            
+            <div className="rn-search-container" ref={searchRef}>
+              <div className="rn-search-box">
+                 <SearchIcon />
+                 <input 
+                   className="rn-search-input" 
+                   placeholder="Search global cities..." 
+                   value={searchQuery}
+                   onChange={e => setSearchQuery(e.target.value)}
+                 />
+                 {isSearching && <span className="rn-search-spinner" />}
+              </div>
+              {searchResults.length > 0 && (
+                 <div className="rn-search-dropdown">
+                   {searchResults.map(city => (
+                      <div className="rn-search-item" key={city.id} onClick={() => handleCitySelect(city)}>
+                         <strong>{city.name}</strong>
+                         <span className="rn-search-country">{city.admin1 ? city.admin1 + ", " : ""}{city.country}</span>
+                      </div>
+                   ))}
+                 </div>
+              )}
             </div>
           </div>
         </div>
@@ -611,6 +674,15 @@ function LocationIcon() {
   );
 }
 
+function SearchIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#5C6E86" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  );
+}
+
 function BoardSkeleton() {
   return (
     <>
@@ -671,6 +743,21 @@ const CSS = `
 .rn-word-to{ color:var(--red); }
 .rn-sub{ font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--slate); margin-top:5px; }
 .rn-clock{ text-align:right; font-family:'Space Mono',monospace; }
+
+/* search */
+.rn-search-container { position:relative; margin-top: 10px; z-index: 10; width: 100%; max-width: 300px; }
+.rn-search-box { display:flex; align-items:center; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:6px 10px; gap:8px; transition:border-color 0.2s; }
+.rn-search-box:focus-within { border-color:var(--amber); }
+.rn-search-input { background:transparent; border:none; outline:none; color:var(--cream); font-family:'Inter',sans-serif; font-size:13px; width:100%; }
+.rn-search-input::placeholder { color:#5C6E86; }
+.rn-search-spinner { width:12px; height:12px; border:2px solid rgba(255,255,255,0.2); border-top-color:var(--amber); border-radius:50%; animation:rn-spin 1s linear infinite; }
+.rn-search-dropdown { position:absolute; top:calc(100% + 4px); left:0; right:0; background:var(--panel-2); border:1px solid var(--line); border-radius:8px; overflow:hidden; box-shadow:0 8px 16px rgba(0,0,0,0.3); }
+.rn-search-item { padding:10px 12px; cursor:pointer; display:flex; flex-direction:column; gap:2px; border-bottom:1px solid var(--line); }
+.rn-search-item:last-child { border-bottom:none; }
+.rn-search-item:hover { background:rgba(255,255,255,0.05); }
+.rn-search-item strong { font-size:13px; color:var(--cream); }
+.rn-search-country { font-size:11px; color:var(--slate); }
+
 .rn-live{ display:inline-flex; align-items:center; gap:6px; font-size:11px; letter-spacing:.16em;
   color:var(--amber); background:rgba(245,184,65,.1); border:1px solid rgba(245,184,65,.3);
   padding:3px 8px; border-radius:4px; }
