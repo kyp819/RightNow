@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface VibeCheckRepository extends JpaRepository<VibeCheck,Long> {
     List<VibeCheck> findTop30ByOrderByTimestampDesc();
+    List<VibeCheck> findTop30ByCityOrderByTimestampDesc(String city);
 }
 

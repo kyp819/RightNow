@@ -17,6 +17,7 @@ public class VibeCheck {
     private String locationName;
     private String vibe;
     private LocalDateTime timestamp;
+    private String city;
 
     public Long getId() {
         return id;
@@ -48,5 +49,13 @@ public class VibeCheck {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

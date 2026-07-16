@@ -5,6 +5,7 @@ import com.rightnowto.backend.repository.VibeCheckRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -26,7 +27,7 @@ public class VibeCheckController {
     }
 
     @GetMapping("/api/vibe-checks")
-    public List<VibeCheck> getAllVibeChecks() {
-        return vibeCheckRepository.findTop30ByOrderByTimestampDesc();
+    public List<VibeCheck> getAllVibeChecks(@RequestParam(required = false, defaultValue = "Toronto") String city) {
+        return vibeCheckRepository.findTop30ByCityOrderByTimestampDesc(city);
     }
 }

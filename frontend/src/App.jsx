@@ -258,7 +258,7 @@ export default function RightNowTO() {
         })
         .catch(() => setPlaces([]));
         
-      const pVibes = fetchJSON(VIBES_GET_PATH)
+      const pVibes = fetchJSON(VIBES_GET_PATH + `?city=${encodeURIComponent(activeCity.name)}`)
         .then(d => setVibes(Array.isArray(d) ? d : []))
         .catch(() => setVibes([]));
         
@@ -281,13 +281,13 @@ export default function RightNowTO() {
   }
 
   async function submitVibe(locationName, vibe) {
-    const entry = { locationName, vibe, timestamp: new Date().toISOString() };
+    const entry = { locationName, vibe, city: activeCity.name, timestamp: new Date().toISOString() };
     setVibes((v) => [entry, ...(v || [])]); // optimistic
     try {
       await fetchJSON(VIBES_POST_PATH, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ locationName, vibe }),
+        body: JSON.stringify({ locationName, vibe, city: activeCity.name }),
       });
     } catch {
       // kept locally; backend not reachable
