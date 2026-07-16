@@ -11,8 +11,8 @@ import java.util.Map;
 
 @Service
 public class PlacesService {
-    @Value("${google.places.api.key}")
-    private String apiKey;
+        @Value("${google.places.api.key}")
+        private String apiKey;
 
         private final RestClient restClient;
 
@@ -30,11 +30,11 @@ public class PlacesService {
                 double latitude = lat != null ? lat : Location.LAT;
                 double longitude = lon != null ? lon : Location.LON;
                 long now = System.currentTimeMillis();
-                
-                if (cachedPlaces != null && cachedLat != null && cachedLon != null 
-                    && Math.abs(cachedLat - latitude) < 0.0001 
-                    && Math.abs(cachedLon - longitude) < 0.0001 
-                    && (now - lastFetchTime) < CACHE_DURATION_MS) {
+
+                if (cachedPlaces != null && cachedLat != null && cachedLon != null
+                                && Math.abs(cachedLat - latitude) < 0.0001
+                                && Math.abs(cachedLon - longitude) < 0.0001
+                                && (now - lastFetchTime) < CACHE_DURATION_MS) {
                         System.out.println("Returning cached places (saves API cost)");
                         return cachedPlaces;
                 }
@@ -44,7 +44,8 @@ public class PlacesService {
                                         "includedTypes",
                                         List.of("cafe", "coffee_shop", "bakery", "restaurant", "bar", "pub",
                                                         "ice_cream_shop", "juice_shop", "vegan_restaurant",
-                                                        "vegetarian_restaurant"),
+                                                        "vegetarian_restaurant", "fast_food_restaurant",
+                                                        "breakfast_restaurant", "meal_takeaway"),
                                         "maxResultCount", 20,
                                         "locationRestriction", Map.of(
                                                         "circle", Map.of(
