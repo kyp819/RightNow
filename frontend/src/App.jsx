@@ -735,7 +735,7 @@ const CSS = `
 
 /* header */
 .rn-header{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px;
-  padding-bottom:18px; border-bottom:1px solid var(--line); flex-wrap:wrap; }
+  padding-bottom:18px; border-bottom:1px solid var(--line); flex-wrap:wrap; z-index: 10; }
 .rn-brand{ display:flex; align-items:center; gap:14px; }
 .rn-cn{ fill:var(--red); filter:drop-shadow(0 0 10px rgba(218,41,28,.35)); flex:none; }
 .rn-word{ font-family:'Barlow Semi Condensed',sans-serif; font-weight:800; font-size:clamp(26px,5vw,40px);
