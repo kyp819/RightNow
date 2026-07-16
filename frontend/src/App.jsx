@@ -192,6 +192,7 @@ async function fetchJSON(path, opts = {}) {
 export default function RightNowTO() {
   const [clock, setClock] = useState(new Date());
   const [weather, setWeather] = useState(null);
+  const [aqi, setAqi] = useState(null);
   const [recs, setRecs] = useState(null);
   const [places, setPlaces] = useState(null);
   const [vibes, setVibes] = useState(null);
@@ -281,6 +282,7 @@ export default function RightNowTO() {
   useEffect(() => {
     setRecs(null);
     setWeather(null);
+    setAqi(null);
     setPlaces(null);
     setVibes(null);
     setRevealed(false);
@@ -302,8 +304,13 @@ export default function RightNowTO() {
         .then(d => setVibes(Array.isArray(d) ? d : []))
         .catch(() => setVibes([]));
         
-      // Wait for all three base APIs to finish loading
-      await Promise.all([pWeather, pPlaces, pVibes]);
+      const pAqi = fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${activeCity.lat}&longitude=${activeCity.lon}&current=us_aqi&domains=cams_global`)
+        .then(res => res.json())
+        .then(data => setAqi(data?.current?.us_aqi))
+        .catch(() => setAqi(null));
+        
+      // Wait for all base APIs to finish loading
+      await Promise.all([pWeather, pPlaces, pVibes, pAqi]);
       
       // AFTER they finish, finally load the recommendations
       // (This guarantees the loader stays on screen until everything is ready)
@@ -400,6 +407,12 @@ export default function RightNowTO() {
           <div className="rn-cond-label">{w.label.toUpperCase()}</div>
           <div className="rn-cond-note">Conditions on the platform right now</div>
         </div>
+        {aqi !== null && (
+          <div style={{ marginLeft: "auto", display: "flex", flexDirection: "column", alignItems: "flex-end", borderLeft: "1px solid var(--line)", paddingLeft: "20px" }}>
+            <div className="rn-cond-label" style={{ color: aqi <= 50 ? "#4ade80" : aqi <= 100 ? "#facc15" : aqi <= 150 ? "#fb923c" : "#ef4444" }}>AQI {aqi}</div>
+            <div className="rn-cond-note">Air Quality Index</div>
+          </div>
+        )}
       </section>
 
       {/* ---- departures board: the picks ---- */}
