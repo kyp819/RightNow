@@ -198,32 +198,7 @@ export default function RightNowTO() {
   const [throttle, setThrottle] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const [revealed, setRevealed] = useState(false);
-  const [activeCity, setActiveCity] = useState(() => {
-    try {
-      const saved = localStorage.getItem("activeCity");
-      return saved ? JSON.parse(saved) : { name: "Toronto", lat: 43.6532, lon: -79.3832 };
-    } catch {
-      return { name: "Toronto", lat: 43.6532, lon: -79.3832 };
-    }
-  });
-  const [logoClicks, setLogoClicks] = useState(0);
-
-  const handleLogoClick = () => {
-    setLogoClicks(prev => {
-      const next = prev + 1;
-      if (next >= 5) {
-        setActiveCity(curr => {
-          const updated = curr.name === "Toronto"
-            ? { name: "San Francisco", lat: 37.7749, lon: -122.4194 }
-            : { name: "Toronto", lat: 43.6532, lon: -79.3832 };
-          localStorage.setItem("activeCity", JSON.stringify(updated));
-          return updated;
-        });
-        return 0;
-      }
-      return next;
-    });
-  };
+  const [activeCity, setActiveCity] = useState({ name: "Toronto", lat: 43.6532, lon: -79.3832 });
 
   useEffect(() => {
     const id = setInterval(() => setClock(new Date()), 1000);
@@ -321,7 +296,7 @@ export default function RightNowTO() {
         <div className="rn-brand">
           <CNTower />
           <div>
-            <div className="rn-word" style={{ userSelect: "none" }}>RIGHTNOW<span className="rn-word-to" onClick={handleLogoClick} style={{ cursor: "pointer" }}>·TO</span></div>
+            <div className="rn-word" style={{ userSelect: "none" }}>RIGHTNOW<span className="rn-word-to">·TO</span></div>
             <div className="rn-sub">Downtown {activeCity.name} · live picks</div>
           </div>
         </div>
