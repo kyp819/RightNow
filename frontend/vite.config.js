@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://rightnow-1.onrender.com/',
+        target: 'https://rightnow-kx7l.onrender.com/',
         changeOrigin: true,
         secure: false
       }

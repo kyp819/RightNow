@@ -165,7 +165,7 @@ public class RecommendationService {
             }
             }
             responseText = responseText.trim();
-            
+
             Map<String, Object> parsed = objectMapper.readValue(responseText, Map.class);
             return (List<Map<String, Object>>) parsed.get("recommendations");
             
