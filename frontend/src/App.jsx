@@ -107,39 +107,39 @@ function WeatherGlyph({ glyph, size = 26 }) {
 }
 
 const TYPE_STYLES = {
-  coffee_shop: { color: "#C98A2B", glyph: "☕" },
-  cafe: { color: "#C98A2B", glyph: "☕" },
-  restaurant: { color: "#DA291C", glyph: "🍽" },
-  vegan_restaurant: { color: "#5B9E4B", glyph: "🌱" },
-  vegetarian_restaurant: { color: "#5B9E4B", glyph: "🌱" },
-  vegetarian: { color: "#5B9E4B", glyph: "🌱" },
-  vegan: { color: "#5B9E4B", glyph: "🌱" },
-  bar: { color: "#8B6FB0", glyph: "🍸" },
-  pub: { color: "#8B6FB0", glyph: "🍺" },
-  bakery: { color: "#D98CA5", glyph: "🥐" },
-  ice_cream_shop: { color: "#F0A6CA", glyph: "🍦" },
-  juice_shop: { color: "#F5B841", glyph: "🧃" },
-  pizza_restaurant: { color: "#DA291C", glyph: "🍕" },
-  japanese_restaurant: { color: "#DA291C", glyph: "🍣" },
-  chinese_restaurant: { color: "#DA291C", glyph: "🥡" },
-  mexican_restaurant: { color: "#DA291C", glyph: "🌮" },
-  italian_restaurant: { color: "#DA291C", glyph: "🍝" },
-  indian_restaurant: { color: "#DA291C", glyph: "🍛" },
-  thai_restaurant: { color: "#DA291C", glyph: "🍜" },
-  korean_restaurant: { color: "#DA291C", glyph: "🥢" },
-  vietnamese_restaurant: { color: "#DA291C", glyph: "🍜" },
-  seafood_restaurant: { color: "#0077B6", glyph: "🦞" },
-  steak_house: { color: "#8B0000", glyph: "🥩" },
-  hamburger_restaurant: { color: "#D4A373", glyph: "🍔" },
-  fast_food_restaurant: { color: "#E07A5F", glyph: "🍟" },
-  sandwich_shop: { color: "#F4A261", glyph: "🥪" },
+  coffee_shop: { color: "#C98A2B" },
+  cafe: { color: "#C98A2B" },
+  restaurant: { color: "#DA291C" },
+  vegan_restaurant: { color: "#5B9E4B" },
+  vegetarian_restaurant: { color: "#5B9E4B" },
+  vegetarian: { color: "#5B9E4B" },
+  vegan: { color: "#5B9E4B" },
+  bar: { color: "#8B6FB0" },
+  pub: { color: "#8B6FB0" },
+  bakery: { color: "#D98CA5" },
+  ice_cream_shop: { color: "#F0A6CA" },
+  juice_shop: { color: "#F5B841" },
+  pizza_restaurant: { color: "#DA291C" },
+  japanese_restaurant: { color: "#DA291C" },
+  chinese_restaurant: { color: "#DA291C" },
+  mexican_restaurant: { color: "#DA291C" },
+  italian_restaurant: { color: "#DA291C" },
+  indian_restaurant: { color: "#DA291C" },
+  thai_restaurant: { color: "#DA291C" },
+  korean_restaurant: { color: "#DA291C" },
+  vietnamese_restaurant: { color: "#DA291C" },
+  seafood_restaurant: { color: "#0077B6" },
+  steak_house: { color: "#8B0000" },
+  hamburger_restaurant: { color: "#D4A373" },
+  fast_food_restaurant: { color: "#E07A5F" },
+  sandwich_shop: { color: "#F4A261" },
 };
 function typeStyle(t = "") {
   const type = t.toLowerCase();
   if (TYPE_STYLES[type]) return TYPE_STYLES[type];
-  if (type.includes("restaurant") || type.includes("food") || type.includes("meal")) return { color: "#DA291C", glyph: "🍽" };
-  if (type.includes("shop") || type.includes("store")) return { color: "#C98A2B", glyph: "🛍" };
-  return { color: "#7C8AA0", glyph: "📍" };
+  if (type.includes("restaurant") || type.includes("food") || type.includes("meal")) return { color: "#DA291C" };
+  if (type.includes("shop") || type.includes("store")) return { color: "#C98A2B" };
+  return { color: "#7C8AA0" };
 }
 function titleCase(t = "") {
   return t.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -152,7 +152,7 @@ function renderReason(text) {
     if (part.toLowerCase() === "vegan" || part.toLowerCase() === "vegetarian") {
       return (
         <span key={i} style={{ color: "#7ED08A", fontWeight: "600", padding: "0 2px", display: "inline-block" }}>
-          🌱 {part}
+          {part}
         </span>
       );
     }
@@ -170,7 +170,7 @@ function timeAgo(ts) {
   return h < 24 ? `${h} hr ago` : `${Math.floor(h / 24)} d ago`;
 }
 
-const VIBE_CHIPS = ["🔥 Busy", "😌 Chill", "🎶 Lively", "🌙 Quiet", "🪑 Seats open", "⏳ Long wait"];
+const VIBE_CHIPS = ["Busy", "Chill", "Lively", "Quiet", "Seats open", "Long wait"];
 
 /* ---------------------------------------------------------------- fetch */
 
@@ -485,7 +485,7 @@ export default function RightNowTO() {
                 </span>
                 <span className="rn-typewrap" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "6px" }}>
                   <span className="rn-flap" style={{ ["--flap"]: ts.color }}>
-                    <em>{ts.glyph}</em>{titleCase(r.Type)}
+                    {titleCase(r.Type)}
                   </span>
                   {matchedPlace && (
                     <span className={open ? "rn-tag-open" : "rn-tag-shut"} style={{ border: "none", background: "none", padding: "0" }}>
